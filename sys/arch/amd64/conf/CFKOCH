@@ -410,8 +410,8 @@ sysbeep0	at pcppi?
 #viadrm*	at drm?		# VIA DRM driver
 
 # DRMKMS drivers
-i915drmkms* 	at pci? dev ? function ?
-intelfb* 	at intelfbbus?
+#i915drmkms* 	at pci? dev ? function ?
+#intelfb* 	at intelfbbus?
 
 radeon* 	at pci? dev ? function ?
 radeondrmkmsfb* at radeonfbbus?
@@ -1111,7 +1111,7 @@ midi*	at midibus?
 midi*	at pcppi?		# MIDI interface to the PC speaker
 
 # The spkr driver provides a simple tone interface to the built in speaker.
-#spkr0	at pcppi?		# PC speaker
+spkr0	at pcppi?		# PC speaker
 
 
 # FM-Radio devices
