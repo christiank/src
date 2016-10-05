@@ -136,7 +136,7 @@ _SRC_TOP_OBJ_=
 # _SUBDIR is used to set SUBDIR, after removing directories that have
 # BUILD_${dir}=no, or that have no ${dir}/Makefile.
 #
-_SUBDIR=	tools lib include gnu external crypto/external bin games
+_SUBDIR=	tools lib include gnu external crypto/external bin
 _SUBDIR+=	libexec sbin usr.bin
 _SUBDIR+=	usr.sbin share sys etc tests compat
 _SUBDIR+=	.WAIT rescue .WAIT distrib regress
@@ -507,7 +507,7 @@ do-obsolete: .PHONY .MAKE
 # (Tells <bsd.subdir.mk> not to recurse for them.)
 #
 
-.for dir in bin etc distrib games libexec regress sbin usr.bin usr.sbin tools
+.for dir in bin etc distrib libexec regress sbin usr.bin usr.sbin tools
 includes-${dir}: .PHONY
 	@true
 .endfor
