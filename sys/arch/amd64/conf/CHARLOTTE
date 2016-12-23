@@ -1,0 +1,3 @@
+# personal kernel for testing and stuff
+include	"arch/amd64/conf/GENERIC"
+options	IWM_DEBUG

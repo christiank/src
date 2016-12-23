@@ -154,7 +154,7 @@ __KERNEL_RCSID(0, "$NetBSD: if_iwm.c,v 1.45 2016/12/18 02:18:29 nonaka Exp $");
 #ifdef IWM_DEBUG
 #define DPRINTF(x)	do { if (iwm_debug > 0) printf x; } while (0)
 #define DPRINTFN(n, x)	do { if (iwm_debug >= (n)) printf x; } while (0)
-int iwm_debug = 0;
+int iwm_debug = 20;
 #else
 #define DPRINTF(x)	do { ; } while (0)
 #define DPRINTFN(n, x)	do { ; } while (0)
