@@ -9,6 +9,6 @@ TESTS_SUBDIRS=	awk basename bzip2 cc cmp config cut \
 		diff dirname find gdb grep gzip id \
 		infocmp jot ld m4 make mkdep \
 		nbperf netpgpverify pr rump_server shmif_dumpbus sdiff \
-		sed sort tmux tr unifdef uniq vmstat xlint
+		sed sort tmux tr unifdef uniq usbhidaction vmstat xlint
 
 .include <bsd.test.mk>
