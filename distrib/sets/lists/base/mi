@@ -5191,6 +5191,7 @@
 ./usr/share/wscons/keymaps/pckbd.br.abnt2	base-util-share		share
 ./usr/share/wscons/keymaps/pckbd.de_CH.iso8859-1	base-util-share		share
 ./usr/share/wscons/keymaps/pckbd.de_CH.iso8859-2	base-obsolete	obsolete
+./usr/share/wscons/keymaps/pckbd.en.workman		base-util-share		share
 ./usr/share/wscons/keymaps/pckbd.fr_CA.iso8859-1	base-util-share 	share
 ./usr/share/wscons/keymaps/pckbd.fr_CH.iso8859-1	base-util-share		share
 ./usr/share/wscons/keymaps/pckbd.fr_CH.iso8859-2	base-obsolete	obsolete
@@ -5200,6 +5201,7 @@
 ./usr/share/wscons/keymaps/pckbd.sv.svascii	base-util-share		share
 ./usr/share/wscons/keymaps/ukbd.any.powerbook	base-util-share		share
 ./usr/share/wscons/keymaps/ukbd.be.azerty	base-util-share		share
+./usr/share/wscons/keymaps/ukbd.en.workman	base-util-share		share
 ./usr/share/zoneinfo				base-sys-share
 ./usr/share/zoneinfo/Africa			base-sys-share
 ./usr/share/zoneinfo/Africa/Abidjan		base-sys-share		share
