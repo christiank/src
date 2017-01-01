@@ -113,6 +113,8 @@ static int 		send_dictionary(FILE *);
 static int 		find_sensors(prop_array_t, const char *, dvprops_t);
 static void 		print_sensors(void);
 static int 		check_sensors(const char *);
+static int		verify_device_exists(const prop_dictionary_t, const char *);
+
 static int 		usage(void);
 
 static int		sysmonfd; /* fd of /dev/sysmon */
@@ -356,6 +358,7 @@ parse_dictionary(int fd)
 	prop_object_t obj;
 	const char *dnp = NULL;
 	int rval = 0;
+	int _rval = 0;
 
 	/* receive dictionary from kernel */
 	rval = prop_dictionary_recv_ioctl(fd, ENVSYS_GETDICTIONARY, &dict);
@@ -370,11 +373,11 @@ parse_dictionary(int fd)
 
 	if (mydevname) {
 		/* -d flag specified, print sensors only for this device */
-		obj = prop_dictionary_get(dict, mydevname);
-		if (prop_object_type(obj) != PROP_TYPE_ARRAY) {
-			warnx("unknown device `%s'", mydevname);
-			rval = EINVAL;
+		if ((_rval = verify_device_exists(dict, mydevname))) {
+			rval = _rval;
 			goto out;
+		} else {
+			obj = prop_dictionary_get(dict, mydevname);
 		}
 
 		rval = find_sensors(obj, mydevname, NULL);
@@ -1043,6 +1046,21 @@ do {									\
 			}
 		}
 		(void)printf("\n");
+	}
+}
+
+static int
+verify_device_exists(const prop_dictionary_t dict, const char *devname)
+{
+	prop_object_t obj;
+
+	obj = prop_dictionary_get(dict, mydevname);
+
+	if (prop_object_type(obj) != PROP_TYPE_ARRAY) {
+		warnx("unknown device `%s'", mydevname);
+		return EINVAL;
+	} else {
+		return 0;
 	}
 }
 
