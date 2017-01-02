@@ -432,7 +432,7 @@ parse_dictionary(int fd)
 	/* print sensors now */
 	if (sensors)
 		rval = check_sensors(sensors);
-	if ((flags & ENVSYS_LFLAG) == 0 && (flags & ENVSYS_DFLAG) == 0)
+	if (!rval && (flags & ENVSYS_LFLAG) == 0 && (flags & ENVSYS_DFLAG) == 0)
 		print_sensors();
 	if (interval)
 		(void)printf("\n");
