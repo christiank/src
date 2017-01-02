@@ -113,6 +113,8 @@ static int 		send_dictionary(FILE *);
 static int 		find_sensors(prop_array_t, const char *, dvprops_t);
 static void 		print_sensors(void);
 static int 		check_sensors(const char *);
+static int		verify_device_exists(const prop_dictionary_t, const char *);
+
 static int 		usage(void);
 
 static int		sysmonfd; /* fd of /dev/sysmon */
@@ -370,11 +372,10 @@ parse_dictionary(int fd)
 
 	if (mydevname) {
 		/* -d flag specified, print sensors only for this device */
-		obj = prop_dictionary_get(dict, mydevname);
-		if (prop_object_type(obj) != PROP_TYPE_ARRAY) {
-			warnx("unknown device `%s'", mydevname);
-			rval = EINVAL;
+		if ((rval = verify_device_exists(dict, mydevname))) {
 			goto out;
+		} else {
+			obj = prop_dictionary_get(dict, mydevname);
 		}
 
 		rval = find_sensors(obj, mydevname, NULL);
@@ -429,7 +430,7 @@ parse_dictionary(int fd)
 	/* print sensors now */
 	if (sensors)
 		rval = check_sensors(sensors);
-	if ((flags & ENVSYS_LFLAG) == 0 && (flags & ENVSYS_DFLAG) == 0)
+	if (!rval && (flags & ENVSYS_LFLAG) == 0 && (flags & ENVSYS_DFLAG) == 0)
 		print_sensors();
 	if (interval)
 		(void)printf("\n");
@@ -646,6 +647,7 @@ check_sensors(const char *str)
 	sensor_t sensor = NULL;
 	char *dvstring, *sstring, *p, *last, *s;
 	bool sensor_found = false;
+	prop_dictionary_t dict;
 
 	if ((s = strdup(str)) == NULL)
 		return errno;
@@ -662,6 +664,11 @@ check_sensors(const char *str)
 			warnx("missing device name");
 			goto out;
 		}
+
+		prop_dictionary_recv_ioctl(sysmonfd, ENVSYS_GETDICTIONARY, &dict);
+
+		if (verify_device_exists(dict, (const char *)dvstring))
+			goto out;
 
 		/* get sensor description */
 		sstring = strtok(NULL, ":");
@@ -1043,6 +1050,21 @@ do {									\
 			}
 		}
 		(void)printf("\n");
+	}
+}
+
+static int
+verify_device_exists(const prop_dictionary_t dict, const char *devname)
+{
+	prop_object_t obj;
+
+	obj = prop_dictionary_get(dict, devname);
+
+	if (prop_object_type(obj) != PROP_TYPE_ARRAY) {
+		warnx("unknown device `%s'", devname);
+		return EINVAL;
+	} else {
+		return 0;
 	}
 }
 
