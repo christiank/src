@@ -358,7 +358,6 @@ parse_dictionary(int fd)
 	prop_object_t obj;
 	const char *dnp = NULL;
 	int rval = 0;
-	int _rval = 0;
 
 	/* receive dictionary from kernel */
 	rval = prop_dictionary_recv_ioctl(fd, ENVSYS_GETDICTIONARY, &dict);
@@ -373,8 +372,7 @@ parse_dictionary(int fd)
 
 	if (mydevname) {
 		/* -d flag specified, print sensors only for this device */
-		if ((_rval = verify_device_exists(dict, mydevname))) {
-			rval = _rval;
+		if ((rval = verify_device_exists(dict, mydevname))) {
 			goto out;
 		} else {
 			obj = prop_dictionary_get(dict, mydevname);
