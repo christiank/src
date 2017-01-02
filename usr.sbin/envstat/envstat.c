@@ -649,6 +649,7 @@ check_sensors(const char *str)
 	sensor_t sensor = NULL;
 	char *dvstring, *sstring, *p, *last, *s;
 	bool sensor_found = false;
+	prop_dictionary_t dict;
 
 	if ((s = strdup(str)) == NULL)
 		return errno;
@@ -665,6 +666,11 @@ check_sensors(const char *str)
 			warnx("missing device name");
 			goto out;
 		}
+
+		prop_dictionary_recv_ioctl(sysmonfd, ENVSYS_GETDICTIONARY, &dict);
+
+		if (verify_device_exists(dict, (const char *)dvstring))
+			goto out;
 
 		/* get sensor description */
 		sstring = strtok(NULL, ":");
@@ -1054,10 +1060,10 @@ verify_device_exists(const prop_dictionary_t dict, const char *devname)
 {
 	prop_object_t obj;
 
-	obj = prop_dictionary_get(dict, mydevname);
+	obj = prop_dictionary_get(dict, devname);
 
 	if (prop_object_type(obj) != PROP_TYPE_ARRAY) {
-		warnx("unknown device `%s'", mydevname);
+		warnx("unknown device `%s'", devname);
 		return EINVAL;
 	} else {
 		return 0;
