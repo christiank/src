@@ -102,7 +102,7 @@ SUBDIR+= cap_mkdb crunchgen ctags gencat hexdump \
 		makewhatis mtree nbperf .WAIT uudecode
 .endif
 
-SUBDIR+= cat rpcgen join lorder m4 mkdep tsort .WAIT yacc .WAIT awk .WAIT lex
+SUBDIR+= cat lua rpcgen join lorder m4 mkdep tsort .WAIT yacc .WAIT awk .WAIT lex
 
 .if ${TOOLS_BUILDRUMP} == "no"
 SUBDIR += .WAIT texinfo \
