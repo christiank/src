@@ -108,6 +108,27 @@ delete_hash_cleanup() {
 	rm -f ${dbname}
 }
 
+atf_test_case truncate_hash cleanup
+truncate_hash_head() {
+	atf_set "descr" \
+	    "Verify proper truncating behavior in hash(3) databases"
+}
+truncate_hash_body () {
+	dbname=$(mktemp /tmp/t_db.XXXXXX)
+	key="a"
+	value="a"
+
+	atf_check -s exit:0 -o ignore -e ignore \
+	    db -w hash ${dbname} ${key} ${value}
+	atf_check -s not-exit:0 -o ignore -e ignore \
+	    db -w hash ${dbname} ${key} ${value}
+	atf_check -s exit:0 -o ignore -e ignore \
+	    db -wC hash ${dbname} ${key} ${value}
+}
+truncate_hash_cleanup() {
+	rm ${dbname}
+}
+
 atf_init_test_cases() {
 	atf_add_test_case usage
 	atf_add_test_case write_hash
@@ -115,4 +136,5 @@ atf_init_test_cases() {
 	atf_add_test_case read_hash
 	atf_add_test_case read_hash_quietly
 	atf_add_test_case delete_hash
+	atf_add_test_case truncate_hash
 }
