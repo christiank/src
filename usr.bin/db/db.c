@@ -503,7 +503,7 @@ db_get(char *keystr)
 	}
 	if (flags & F_DECODE_KEY)
 		free(key.data);
-	return (r);
+	return ((flags & F_QUIET) ? 0 : r);
 }
 
 static int
