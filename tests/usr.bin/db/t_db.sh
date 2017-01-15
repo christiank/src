@@ -84,10 +84,35 @@ read_hash_quietly_cleanup() {
 	rm -f ${dbname}
 }
 
+atf_test_case delete_hash cleanup
+delete_hash_head() {
+	atf_set "descr" \
+	    "Ensure db(1) can delete keys in hash(3) databases"
+}
+delete_hash_body() {
+	dbname=$(mktemp /tmp/t_db.XXXXXX)
+	valid_key="a"
+	invalid_key="b"
+	value="c"
+
+	db -w hash ${dbname} ${valid_key} ${value}
+
+	atf_check -s exit:0 -o ignore -e ignore \
+		db -d hash ${dbname} ${valid_key}
+	atf_check -s not-exit:0 -o ignore -e ignore \
+		db -d hash ${dbname} ${valid_key}
+	atf_check -s not-exit:0 -o ignore -e ignore \
+		db -d hash ${dbname} ${invalid_key}
+}
+delete_hash_cleanup() {
+	rm -f ${dbname}
+}
+
 atf_init_test_cases() {
 	atf_add_test_case usage
 	atf_add_test_case write_hash
 	atf_add_test_case update_hash
 	atf_add_test_case read_hash
 	atf_add_test_case read_hash_quietly
+	atf_add_test_case delete_hash
 }
