@@ -45,6 +45,7 @@ __dead static void usage(void);
 static void extract_property(prop_dictionary_t, const char *, bool);
 static void display_object(prop_object_t, bool);
 static void list_children(int, char *, bool, bool, int);
+static void list_children2(int, char *, bool, bool, int);
 
 static void
 usage(void)
@@ -82,8 +83,9 @@ main(int argc, char **argv)
 	char *xml;
 
 	mode = 0;
-	while ((c = getopt(argc, argv, "QRSa:dlnprt")) != -1) {
+	while ((c = getopt(argc, argv, "GQRSa:dlnprt")) != -1) {
 		switch (c) {
+		case 'G':
 		case 'Q':
 		case 'R':
 		case 'S':
@@ -111,7 +113,7 @@ main(int argc, char **argv)
 	argc -= optind;
 	argv += optind;
 
-	if ((argc < 1 && mode != 'l') || mode == 0)
+	if ((argc < 1 && ((mode != 'l') && (mode != 'G'))) || mode == 0)
 		usage();
 
 	fd = open(DRVCTLDEV, OPEN_MODE(mode), 0);
@@ -142,6 +144,11 @@ main(int argc, char **argv)
 		break;
 	case 'l':
 		list_children(fd, argc ? argv[0] : NULL, nflag, tflag, 0);
+		break;
+	case 'G':
+		printf("digraph G {\n");
+		list_children2(fd, argc ? argv[0] : NULL, nflag, tflag, 0);
+		printf("}\n");
 		break;
 	case 'r':
 		memset(&raa, 0, sizeof(raa));
@@ -336,6 +343,45 @@ list_children(int fd, char *dvname, bool nflag, bool tflag, int depth)
 			list_children(fd, laa.l_childname[i], nflag,
 			    tflag, depth + 1);
 		}
+	}
+
+	free(laa.l_childname);
+}
+
+
+static void
+list_children2(int fd, char *dvname, bool nflag, bool tflag, int depth)
+{
+	struct devlistargs laa = {.l_devname = "", .l_childname = NULL,
+				  .l_children = 0};
+	size_t children;
+	int i;
+
+	if (dvname == NULL) {
+		if (depth > 0)
+			return;
+		*laa.l_devname = '\0';
+	} else {
+		strlcpy(laa.l_devname, dvname, sizeof(laa.l_devname));
+	}
+
+	if (ioctl(fd, DRVLISTDEV, &laa) == -1)
+		err(3, "DRVLISTDEV");
+
+	children = laa.l_children;
+
+	laa.l_childname = malloc(children * sizeof(laa.l_childname[0]));
+	if (laa.l_childname == NULL)
+		err(5, "DRVLISTDEV");
+	if (ioctl(fd, DRVLISTDEV, &laa) == -1)
+		err(3, "DRVLISTDEV");
+	if (laa.l_children > children)
+		err(6, "DRVLISTDEV: number of children grew");
+
+	for (i = 0; i < (int)laa.l_children; i++) {
+		printf("\t%s -> %s\n", (dvname == NULL) ? "root" : laa.l_devname, laa.l_childname[i]);
+		list_children2(fd, laa.l_childname[i], nflag, tflag, depth + 1);
+
 	}
 
 	free(laa.l_childname);
