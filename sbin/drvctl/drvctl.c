@@ -45,7 +45,7 @@ __dead static void usage(void);
 static void extract_property(prop_dictionary_t, const char *, bool);
 static void display_object(prop_object_t, bool);
 static void list_children(int, char *, bool, bool, int);
-static void graphviz_recurse(int, char *, int);
+static void graphviz_recurse(int, char *);
 
 static void
 usage(void)
@@ -55,11 +55,12 @@ usage(void)
 	    "       %s -d device\n"
 	    "       %s [-nt] -l [device]\n"
 	    "       %s [-n] -p device [property]\n"
+	    "       %s -G device\n"
 	    "       %s -Q device\n"
 	    "       %s -R device\n"
 	    "       %s -S device\n",
 	    getprogname(), getprogname(), getprogname(), getprogname(),
-	    getprogname(), getprogname(), getprogname());
+	    getprogname(), getprogname(), getprogname(), getprogname());
 	exit(1);
 }
 
@@ -123,7 +124,7 @@ main(int argc, char **argv)
 	switch (mode) {
 	case 'G':
 		printf("digraph G {\n");
-		graphviz_recurse(fd, argc ? argv[0] : NULL, 0);
+		graphviz_recurse(fd, argc ? argv[0] : NULL);
 		printf("}\n");
 		break;
 	case 'Q':
@@ -348,9 +349,8 @@ list_children(int fd, char *dvname, bool nflag, bool tflag, int depth)
 	free(laa.l_childname);
 }
 
-
 static void
-graphviz_recurse(int fd, char *dvname, int depth)
+graphviz_recurse(int fd, char *dvname)
 {
 	struct devlistargs laa = {.l_devname = "", .l_childname = NULL,
 				  .l_children = 0};
@@ -358,8 +358,6 @@ graphviz_recurse(int fd, char *dvname, int depth)
 	int i;
 
 	if (dvname == NULL) {
-		if (depth > 0)
-			return;
 		*laa.l_devname = '\0';
 	} else {
 		strlcpy(laa.l_devname, dvname, sizeof(laa.l_devname));
@@ -382,7 +380,7 @@ graphviz_recurse(int fd, char *dvname, int depth)
 		printf("\t\"%s\" -> \"%s\"\n",
 		    (dvname == NULL) ? "(root)" : laa.l_devname,
 		    laa.l_childname[i]);
-		graphviz_recurse(fd, laa.l_childname[i], depth + 1);
+		graphviz_recurse(fd, laa.l_childname[i]);
 	}
 
 	free(laa.l_childname);
