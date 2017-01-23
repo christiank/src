@@ -45,7 +45,7 @@ __dead static void usage(void);
 static void extract_property(prop_dictionary_t, const char *, bool);
 static void display_object(prop_object_t, bool);
 static void list_children(int, char *, bool, bool, int);
-static void list_children2(int, char *, bool, bool, int);
+static void graphviz_recurse(int, char *, int);
 
 static void
 usage(void)
@@ -121,6 +121,11 @@ main(int argc, char **argv)
 		err(2, "open %s", DRVCTLDEV);
 
 	switch (mode) {
+	case 'G':
+		printf("digraph G {\n");
+		graphviz_recurse(fd, argc ? argv[0] : NULL, 0);
+		printf("}\n");
+		break;
 	case 'Q':
 		paa.flags = DEVPM_F_SUBTREE;
 		/*FALLTHROUGH*/
@@ -144,11 +149,6 @@ main(int argc, char **argv)
 		break;
 	case 'l':
 		list_children(fd, argc ? argv[0] : NULL, nflag, tflag, 0);
-		break;
-	case 'G':
-		printf("digraph G {\n");
-		list_children2(fd, argc ? argv[0] : NULL, nflag, tflag, 0);
-		printf("}\n");
 		break;
 	case 'r':
 		memset(&raa, 0, sizeof(raa));
@@ -350,7 +350,7 @@ list_children(int fd, char *dvname, bool nflag, bool tflag, int depth)
 
 
 static void
-list_children2(int fd, char *dvname, bool nflag, bool tflag, int depth)
+graphviz_recurse(int fd, char *dvname, int depth)
 {
 	struct devlistargs laa = {.l_devname = "", .l_childname = NULL,
 				  .l_children = 0};
@@ -379,9 +379,10 @@ list_children2(int fd, char *dvname, bool nflag, bool tflag, int depth)
 		err(6, "DRVLISTDEV: number of children grew");
 
 	for (i = 0; i < (int)laa.l_children; i++) {
-		printf("\t%s -> %s\n", (dvname == NULL) ? "root" : laa.l_devname, laa.l_childname[i]);
-		list_children2(fd, laa.l_childname[i], nflag, tflag, depth + 1);
-
+		printf("\t\"%s\" -> \"%s\"\n",
+		    (dvname == NULL) ? "(root)" : laa.l_devname,
+		    laa.l_childname[i]);
+		graphviz_recurse(fd, laa.l_childname[i], depth + 1);
 	}
 
 	free(laa.l_childname);
