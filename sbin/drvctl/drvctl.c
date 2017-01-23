@@ -37,8 +37,6 @@
 #include <sys/ioctl.h>
 #include <sys/drvctlio.h>
 
-#define OPTS "QRSa:dlnprt"
-
 #define	OPEN_MODE(mode)							\
 	(((mode) == 'd' || (mode) == 'r') ? O_RDWR			\
 					  : O_RDONLY)
@@ -84,7 +82,7 @@ main(int argc, char **argv)
 	char *xml;
 
 	mode = 0;
-	while ((c = getopt(argc, argv, OPTS)) != -1) {
+	while ((c = getopt(argc, argv, "QRSa:dlnprt")) != -1) {
 		switch (c) {
 		case 'Q':
 		case 'R':
