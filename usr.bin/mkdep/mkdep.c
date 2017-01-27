@@ -46,7 +46,6 @@ __RCSID("$NetBSD: mkdep.c,v 1.44 2015/06/16 22:54:10 christos Exp $");
 #include <ctype.h>
 #include <err.h>
 #include <fcntl.h>
-#include <getopt.h>
 #include <locale.h>
 #include <paths.h>
 #include <stdio.h>
@@ -192,11 +191,6 @@ read_fname(void)
 	return fbuf;
 }
 
-static struct option longopt[] = {
-	{ "sysroot", 1, NULL, 'R' },
-	{ NULL, 0, NULL, '\0' },
-};
-
 static void
 addsuff(suff_list_t **l, const char *s, size_t len)
 {
@@ -246,7 +240,7 @@ main(int argc, char **argv)
 	opterr = 0;	/* stop getopt() bleating about errors. */
 	for (;;) {
 		ok_ind = optind;
-		ch = getopt_long(argc, argv, "aDdf:ioP:pqRs:v", longopt, NULL);
+		ch = getopt(argc, argv, "aDdf:ioP:pqs:v");
 		switch (ch) {
 		case -1:
 			ok_ind = optind;
@@ -279,9 +273,6 @@ main(int argc, char **argv)
 			continue;
 		case 'q':	/* Quiet */
 			qflag = 1;
-			continue;
-		case 'R':
-			/* sysroot = optarg */
 			continue;
 		case 's':	/* Suffix list */
 			suffixes = optarg;
