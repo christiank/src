@@ -141,6 +141,7 @@ cvsscan(char **pathv, const char *name, struct latest *lat)
         FTS *dh;
 	char repo[MAXPATHLEN];
         FTSENT *entry;
+	int found = 0;
 
 	lat->time = 0;
 
@@ -157,9 +158,13 @@ cvsscan(char **pathv, const char *name, struct latest *lat)
 
 		getrepo(entry, repo, sizeof(repo));
 		getlatest(entry, repo, lat);
+		found++;
         }
 
         (void)fts_close(dh);
+
+	if (!found)
+		errx(EXIT_FAILURE, "%s: not a valid CVS repo", pathv[0]);
 }
 
 static __dead void
