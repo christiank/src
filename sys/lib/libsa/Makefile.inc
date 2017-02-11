@@ -32,7 +32,11 @@ SALIB=		${SADST}/libsa.a
 SALIB_PROF=	${SADST}/libsa_p.a
 .endif
 ZLIBSRCDIR:=	${.PARSEDIR}/../../../common/dist/zlib
+LUASRCDIR:=	${.PARSEDIR}/../../../external/mit/lua/dist/src
 SAMISCCPPFLAGS+=-I${ZLIBSRCDIR}
+SAMISCCPPFLAGS+=-I${LUASRCDIR}
+SAMISCCPPFLAGS+=-I${S}/sys
+SAMISCCPPFLAGS+=-I/usr/include # XXX barf
 
 SAMAKE= \
 	cd ${SADST} && ${MAKE} -f ${SADIR:Q}/Makefile \

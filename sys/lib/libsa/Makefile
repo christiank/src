@@ -28,7 +28,7 @@ SRCS+=	alloc.c atoi.c errno.c exit.c files.c \
 	panic.c printf.c qsort.c snprintf.c strerror.c \
 	subr_prf.c twiddle.c checkpasswd.c
 
-SRCS+=	bootcfg.c
+SRCS+=	bootcfg.c luabootcfg.c
 
 # string routines
 .if ${MACHINE_ARCH} != "i386" && ${MACHINE_ARCH} != "x86_64"

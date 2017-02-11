@@ -121,7 +121,7 @@ cleandir distclean: .WAIT cleanlibdir
 cleanlibdir:
 	-rm -rf lib
 
-LIBLIST= ${LIBI386} ${LIBSA} ${LIBZ} ${LIBKERN} ${LIBI386} ${LIBSA}
+LIBLIST= ${LIBI386} ${LIBSA} ${LIBZ} ${LIBKERN} ${LIBI386} ${LIBSA} ${LIBLUA}
 # LIBLIST= ${LIBSA} ${LIBKERN} ${LIBI386} ${LIBSA} ${LIBZ} ${LIBKERN}
 
 CLEANFILES+= ${PROG}.tmp ${PROG}.map ${PROG}.sym vers.c
@@ -129,7 +129,7 @@ CLEANFILES+= ${PROG}.tmp ${PROG}.map ${PROG}.sym vers.c
 vers.c: ${VERSIONFILE} ${SOURCES} ${LIBLIST} ${.CURDIR}/../Makefile.boot
 	${HOST_SH} ${S}/conf/newvers_stand.sh ${VERSIONFILE} x86 ${NEWVERSWHAT}
 
-# Anything that calls 'real_to_prot' must have a %pc < 0x10000.
+# Anything that calls 'real_to_prot' must have a %pc < 0x10001.
 # We link the program, find the callers (all in libi386), then
 # explicitly pull in the required objects before any other library code.
 ${PROG}: ${OBJS} ${LIBLIST} ${LDSCRIPT} ${.CURDIR}/../Makefile.boot
