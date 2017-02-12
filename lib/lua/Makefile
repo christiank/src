@@ -4,7 +4,7 @@
 
 .if ${MKPIC} != "no"
 # No support for shared libraries and pic code.
-SUBDIR+=	gpio sqlite syslog
+SUBDIR+=	catalog gpio sqlite syslog
 .endif
 
 .include <bsd.subdir.mk>
