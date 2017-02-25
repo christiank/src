@@ -122,6 +122,13 @@ getversion() {
 	esac
 }
 
+if [ $# -lt 1 ]; then
+	progname=$(basename $0)
+	echo "${progname}: usage: ${progname} [-av]" 1>&2
+	echo "${progname}: usage: ${progname} [program ...]" 1>&2
+	exit 1
+fi
+
 all=false
 while [ $# -gt 0 ]; do
 	case "$1" in
