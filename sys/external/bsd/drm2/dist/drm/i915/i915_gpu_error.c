@@ -1185,7 +1185,6 @@ static void i915_capture_gen_state(struct drm_i915_private *dev_priv,
 void i915_capture_error_state(struct drm_device *dev, bool wedged,
 			      const char *error_msg)
 {
-	static bool warned;
 	struct drm_i915_private *dev_priv = dev->dev_private;
 	struct drm_i915_error_state *error;
 	unsigned long flags;
@@ -1223,15 +1222,6 @@ void i915_capture_error_state(struct drm_device *dev, bool wedged,
 	if (error) {
 		i915_error_state_free(&error->ref);
 		return;
-	}
-
-	if (!warned) {
-		DRM_INFO("GPU hangs can indicate a bug anywhere in the entire gfx stack, including userspace.\n");
-		DRM_INFO("Please file a _new_ bug report on bugs.freedesktop.org against DRI -> DRM/Intel\n");
-		DRM_INFO("drm/i915 developers can then reassign to the right component if it's not a kernel issue.\n");
-		DRM_INFO("The gpu crash dump is required to analyze gpu hangs, so please always attach it.\n");
-		DRM_INFO("GPU crash dump saved to /sys/class/drm/card%d/error\n", dev->primary->index);
-		warned = true;
 	}
 }
 
