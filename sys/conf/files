@@ -1434,7 +1434,7 @@ defpseudo gif:		ifnet
 defpseudo faith:	ifnet
 defpseudo mpls:		ifnet
 defpseudo srt:		ifnet
-defpseudo stf:		ifnet
+defpseudo stf:		ifnet, inet6
 defpseudodev tap:	ifnet, ether, arp
 defpseudo carp:		ifnet, ether, arp
 defpseudodev etherip:	ifnet, ether, arp
